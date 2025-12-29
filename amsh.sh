@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Aici vei include (source) funcțiile colegului B mai târziu
-# source ./mount_manager.sh
+# import la functii pt mount
+source ./mount_manager.sh
 
 echo "Bun venit în Automounter Shell!"
 
@@ -9,7 +9,8 @@ echo "Bun venit în Automounter Shell!"
 # Mock function
 ensure_mount_exists() {
     echo "[DEBUG] Verific daca trebuie montat ceva pentru calea: $1"
-    # logica pentru verificare path
+    start_mount "$1"
+    
 }
 
 
@@ -58,6 +59,7 @@ process_command() {
 
 # loop principal
 while true; do
+    check_and_unmount_expired
     echo -n "amsh> "
     read -r linie_comanda
 
