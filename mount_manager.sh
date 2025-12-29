@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Configurare fișiere și foldere de lucru
-CONFIG_FILE="amsh.conf"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+CONFIG_FILE="$SCRIPT_DIR/amsh.conf"
 TTL_DIR="/tmp/amsh_ttl"
 mkdir -p "$TTL_DIR"
 
