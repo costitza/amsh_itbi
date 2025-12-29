@@ -43,7 +43,7 @@ process_command() {
     # --- comenzi externe (ls, cp, cat, etc) ---
     
     # verificare fiecare arg
-    while arg in "${args[@]}"; do
+    for arg in "${args[@]}"; do
         # seamana cu un path sau nu pentru pharsing
         if [[ "$arg" == /* ]] || [[ "$arg" == ./* ]] || [[ "$arg" == ../* ]]; then
              local abs_arg=$(realpath -m "$arg")
