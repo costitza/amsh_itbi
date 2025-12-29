@@ -9,7 +9,7 @@ echo "Bun venit în Automounter Shell!"
 # Mock function
 ensure_mount_exists() {
     echo "[DEBUG] Verific daca trebuie montat ceva pentru calea: $1"
-    start_mount "$1"
+    smart_mount "$1"
     
 }
 
@@ -34,7 +34,7 @@ process_command() {
         local abs_path=$(realpath -m "$target_dir")
 
         # de facut partea verific
-        ensure_mount_exists "$abs_path"
+        smart_mount "$abs_path"
         
         builtin cd "$target_dir"
         return
@@ -49,7 +49,7 @@ process_command() {
              local abs_arg=$(realpath -m "$arg")
              
              # din nou logica de introudus
-             ensure_mount_exists "$abs_arg"
+             smart_mount "$abs_arg"
         fi
     done
 
@@ -59,7 +59,7 @@ process_command() {
 
 # loop principal
 while true; do
-    check_and_unmount_expired
+    check_and_umount_expired
     echo -n "amsh> "
     read -r linie_comanda
 
