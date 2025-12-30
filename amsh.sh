@@ -28,19 +28,31 @@ process_command() {
     
     # --- comanda history custom ---
     if [[ "$command" == "history" ]]; then
-        # "-c" pentru stergere history
+        # sterge history -c
         if [[ "${args[1]}" == "-c" ]]; then
-            > "$HISTORY_FILE"  # goleste
-            echo "╔════════════════╗"
-            echo "║ Istoric sters. ║"
-            echo "╚════════════════╝"
+            > "$HISTORY_FILE"
+            print_history_cleared
+        
+        # afisare
         else
-            # Afișează istoricul numerotat
-            if [[ -f "$HISTORY_FILE" ]]; then
-                cat -n "$HISTORY_FILE"
+            print_history_header
+            
+            if [[ -f "$HISTORY_FILE" && -s "$HISTORY_FILE" ]]; then
+                local count=1
+                # line by line read
+                while read -r line; do
+                    
+                    print_history_entry "$count" "$line"
+                    
+                    ((count++))
+                done < "$HISTORY_FILE"
+            else
+                print_history_empty
             fi
+            
+            print_history_footer
         fi
-        return # nu trimiti "history" la sh -c
+        return 
     fi
 
     # --- comanda CD ---
@@ -55,7 +67,6 @@ process_command() {
         # cale abs (rezolva ../ si ./)
         local abs_path=$(realpath -m "$target_dir")
 
-        # de facut partea verific
         smart_mount "$abs_path"
         
         builtin cd "$target_dir"
