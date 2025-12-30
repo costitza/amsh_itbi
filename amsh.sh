@@ -2,9 +2,7 @@
 
 # import la functii pt mount
 source ./mount_manager.sh
-
-echo "Bun venit în Automounter Shell!"
-
+source ./style.sh
 
 process_command() {
     local cmd_line="$1"
@@ -49,10 +47,18 @@ process_command() {
     sh -c "$cmd_line"
 }
 
+# banner de inceput
+show_welcome_banner
+
+
 # loop principal
 while true; do
     check_and_umount_expired
-    echo -n "amsh> "
+    show_prompt
+
+    
+    
+    
     read -r linie_comanda
 
     # linie goala
