@@ -21,6 +21,11 @@ process_command() {
     read -ra args <<< "$cmd_line"
     local command="${args[0]}"
     
+    if [[ "$command" == "status" ]]; then
+    	show_mount_status
+    	return
+    fi
+    
     # --- comanda history custom ---
     if [[ "$command" == "history" ]]; then
         # "-c" pentru stergere history

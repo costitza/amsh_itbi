@@ -6,6 +6,64 @@ CONFIG_FILE="$SCRIPT_DIR/amsh.conf"
 TTL_DIR="/tmp/amsh_ttl"
 mkdir -p "$TTL_DIR"
 
+# afisare status a fiecarui mountpoint (in secunde)
+show_mount_status() {
+    echo "-----------------------------------------------------------------"
+    printf "%-25s %-15s %-10s %s\n" "MOUNTPOINT" "DEVICE" "STARE" "TIMP RAMAS"
+    echo "-----------------------------------------------------------------"
+
+    if [[ ! -f "$CONFIG_FILE" ]]; then
+        echo "Eroare: Nu găsesc fișierul de configurare."
+        return
+    fi
+
+    while read -r device mpoint fstype ttl; do
+        [[ "$device" == \#* ]] || [[ -z "$device" ]] && continue
+
+        if mountpoint -q "$mpoint"; then
+            status_color="\033[1;32mMONTAT\033[0m"   # Verde
+            
+            local ttl_file="$TTL_DIR/${mpoint//\//_}.last_access"
+            local time_info="Infinit (Activ)"
+
+            if [[ -f "$ttl_file" ]]; then
+                local last_access=$(stat -c %Y "$ttl_file")
+                local current_time=$(date +%s)
+                
+                # --- MODIFICAREA ESTE AICI ---
+                # 1. Calculăm cât timp a trecut (în secunde)
+                local elapsed_sec=$(( current_time - last_access ))
+                
+                # 2. Convertim TTL-ul din config (minute) în secunde
+                local ttl_sec_total=$(( ttl * 60 ))
+                
+                # 3. Calculăm cât a mai rămas
+                local remaining_sec=$(( ttl_sec_total - elapsed_sec ))
+
+                # Să nu afișăm numere negative
+                if [[ $remaining_sec -lt 0 ]]; then remaining_sec=0; fi
+                
+                # Colorare: Roșu dacă mai sunt sub 60 de secunde
+                if [[ $remaining_sec -lt 60 ]]; then
+                    time_info="\033[1;31m${remaining_sec}s\033[0m (din ${ttl}m)"
+                else
+                    time_info="${remaining_sec}s"
+                fi
+            else
+                time_info="N/A"
+            fi
+
+            printf "%-25s %-15s %b %b\n" "$mpoint" "$device" "$status_color" "$time_info"
+        else
+            status_color="\033[1;31mDEMONTAT\033[0m"
+            printf "%-25s %-15s %b %s\n" "$mpoint" "$device" "$status_color" "-"
+        fi
+
+    done < "$CONFIG_FILE"
+    echo "-----------------------------------------------------------------"
+}
+
+
 # Caută dacă o cale aparține unui mountpoint din config
 get_config_for_path() {
     local target_path=$(realpath -m "$1")
