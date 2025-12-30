@@ -6,14 +6,6 @@ source ./mount_manager.sh
 echo "Bun venit în Automounter Shell!"
 
 
-# Mock function
-ensure_mount_exists() {
-    echo "[DEBUG] Verific daca trebuie montat ceva pentru calea: $1"
-    smart_mount "$1"
-    
-}
-
-
 process_command() {
     local cmd_line="$1"
     
