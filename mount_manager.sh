@@ -131,7 +131,6 @@ check_and_umount_expired() {
                 if ! fuser -s "$mpoint" 2>/dev/null; then
                     echo "[SYSTEM] TTL expirat. Demontare: $mpoint"
                     
-                    # Notificare Desktop pentru demontare
                     send_notification "AMSH: Demontare automată" "TTL expirat pentru $mpoint. Dispozitivul a fost demontat." "drive-removable-media"
                     
                     sudo umount "$mpoint"
