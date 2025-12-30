@@ -1,4 +1,4 @@
-# --- Configurare Culori Globale (pentru a fi folosite de toate functiile) ---
+
 CYAN='\033[1;36m'
 GREEN='\033[1;32m'
 YELLOW='\033[1;33m'
