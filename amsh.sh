@@ -4,8 +4,15 @@
 source ./mount_manager.sh
 source ./style.sh
 
-#fisier de history
+# fisier de history
 HISTORY_FILE="$HOME/.amsh_history"
+
+handle_sigint() {
+    echo "" # Trece la linie nouă ca să nu scrii peste prompt
+    # Nu facem nimic altceva -> Shell-ul continuă să ruleze
+}
+
+trap handle_sigint SIGINT
 
 process_command() {
     local cmd_line="$1"
@@ -78,9 +85,22 @@ while true; do
     
     
     read -r linie_comanda
+    exit_code=$?
+    
+    if [ $exit_code -ne 0 ]; then
+        # 130 -> ctrl-c
+        if [ $exit_code -eq 130 ]; then
+            continue  # reluare bucla
+        fi
+        
+        # alte erori
+        echo "La revedere."
+        break
+    fi
+    
 
     # linie goala
-    if [[ -z "$linie_comanda" ]]; then
+    if [[ -z "$linie_comanda" ]] && continue ; then
         continue
     fi
     
