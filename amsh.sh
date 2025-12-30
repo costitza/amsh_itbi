@@ -4,12 +4,30 @@
 source ./mount_manager.sh
 source ./style.sh
 
+#fisier de history
+HISTORY_FILE="$HOME/.amsh_history"
+
 process_command() {
     local cmd_line="$1"
     
     # Sparge stringul într-un array
     read -ra args <<< "$cmd_line"
     local command="${args[0]}"
+    
+    # --- comanda history custom ---
+    if [[ "$command" == "history" ]]; then
+        # "-c" pentru stergere history
+        if [[ "${args[1]}" == "-c" ]]; then
+            > "$HISTORY_FILE"  # goleste
+            echo "Istoric sters."
+        else
+            # Afișează istoricul numerotat
+            if [[ -f "$HISTORY_FILE" ]]; then
+                cat -n "$HISTORY_FILE"
+            fi
+        fi
+        return # nu trimiti "history" la sh -c
+    fi
 
     # --- comanda CD ---
     if [[ "$command" == "cd" ]]; then
@@ -64,6 +82,11 @@ while true; do
     # linie goala
     if [[ -z "$linie_comanda" ]]; then
         continue
+    fi
+    
+    # salvam in history file
+    if [[ "$linie_comanda" != "exit" &&  "$linie_comanda" != "history" ]]; then
+        echo "$linie_comanda" >> "$HISTORY_FILE"
     fi
 
     # exit 
