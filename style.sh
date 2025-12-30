@@ -67,3 +67,9 @@ show_welcome_banner() {
     echo
 }
 
+print_exit_message() {
+    echo -e "${CYAN}╔══════════════════════════════════════════════════════╗${RESET}"
+    echo -e "${CYAN}║${RESET}                   ${GREEN}LA REVEDERE!${RESET}                       ${CYAN}║${RESET}"
+    echo -e "${CYAN}╚══════════════════════════════════════════════════════╝${RESET}"
+    echo ""
+}

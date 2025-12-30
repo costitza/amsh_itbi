@@ -129,9 +129,7 @@ while true; do
 
     # exit 
     if [[ "$linie_comanda" == "exit" ]]; then
-	echo "╔════════════════╗"
-        echo "║  La revedere!  ║"
-        echo "╚════════════════╝"
+	print_exit_message
         break
     fi
 
