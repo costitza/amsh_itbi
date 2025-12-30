@@ -31,7 +31,9 @@ process_command() {
         # "-c" pentru stergere history
         if [[ "${args[1]}" == "-c" ]]; then
             > "$HISTORY_FILE"  # goleste
-            echo "Istoric sters."
+            echo "╔════════════════╗"
+            echo "║ Istoric sters. ║"
+            echo "╚════════════════╝"
         else
             # Afișează istoricul numerotat
             if [[ -f "$HISTORY_FILE" ]]; then
@@ -116,7 +118,9 @@ while true; do
 
     # exit 
     if [[ "$linie_comanda" == "exit" ]]; then
-        echo "La revedere!"
+	echo "╔════════════════╗"
+        echo "║  La revedere!  ║"
+        echo "╚════════════════╝"
         break
     fi
 

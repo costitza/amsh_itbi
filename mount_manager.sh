@@ -56,7 +56,7 @@ show_mount_status() {
             printf "%-25s %-15s %b     %b\n" "$mpoint" "$device" "$status_color" "$time_info"
         else
             status_color="\033[1;31mDEMONTAT\033[0m"
-            printf "%-25s %-15s %b %s\n" "$mpoint" "$device" "$status_color" "-"
+            printf "%-25s %-15s %b   %s\n" "$mpoint" "$device" "$status_color" "-"
         fi
 
     done < "$CONFIG_FILE"
