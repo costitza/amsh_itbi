@@ -77,6 +77,19 @@ get_config_for_path() {
     return 1
 }
 
+# Funcție helper pentru a trimite notificări către utilizatorul curent fără erori de D-Bus
+send_notification() {
+    local title="$1"
+    local message="$2"
+    local icon="$3"
+    local real_user="${SUDO_USER:-$USER}"
+    local user_id=$(id -u "$real_user")
+
+    # Execută notify-send ca utilizator logat, indicând adresa corectă a bus-ului de sesiune
+    sudo -u "$real_user" DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/"$user_id"/bus \
+    notify-send "$title" "$message" --icon="$icon"
+}
+
 # Funcția principală de montare automată
 smart_mount() {
     local path="$1"
@@ -88,6 +101,10 @@ smart_mount() {
         # Montează dacă nu este deja instalat
         if ! mountpoint -q "$mpoint"; then
             echo "[SYSTEM] Montare automată: $mpoint"
+            
+            # Notificare Desktop pentru montare
+            send_notification "AMSH: Montare automată" "Dispozitivul $device a fost montat în $mpoint" "drive-harddisk"
+            
             sudo mount -t "$fstype" "$device" "$mpoint"
         fi
 
@@ -113,6 +130,10 @@ check_and_umount_expired() {
             if [ "$diff" -ge "$ttl" ]; then
                 if ! fuser -s "$mpoint" 2>/dev/null; then
                     echo "[SYSTEM] TTL expirat. Demontare: $mpoint"
+                    
+                    # Notificare Desktop pentru demontare
+                    send_notification "AMSH: Demontare automată" "TTL expirat pentru $mpoint. Dispozitivul a fost demontat." "drive-removable-media"
+                    
                     sudo umount "$mpoint"
                     rm "$ttl_file"
                 fi
