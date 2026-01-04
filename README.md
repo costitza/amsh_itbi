@@ -8,8 +8,6 @@ Proiectul pune accent pe eficiență și automatizare, demontând dispozitivele 
 
 ## 👥 Autori
 
-Proiect realizat în cadrul cursului **Sisteme de Operare (2025)**:
-
 - **Ababei Raul-Costin**
 - **Iosub Dragoș-Casian**
 
@@ -134,4 +132,3 @@ Scriptul testează automat toate intrările din `amsh.conf`.
 
 ---
 
-Proiect educațional realizat în scop academic.
