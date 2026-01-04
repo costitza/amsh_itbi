@@ -1,14 +1,14 @@
-#AMSH - Auto Mount Shell
+# AMSH - Auto Mount Shell
 
 AMSH este un interpretor de comenzi (shell) customizat pentru Linux, creat cu scopul de a gestiona automat montarea și demontarea sistemelor de fișiere (dispozitive de stocare) la accesare. Proiectul pune accent pe eficiență și automatizare, demontând dispozitivele care nu mai sunt utilizate după o perioadă de timp configurabilă (TTL).
 
-#👥 Autori
+# 👥 Autori
 
     Ababei Raul-Costin
 
     Iosub Dragos-Casian
 
-#✨ Funcționalități Principale
+# ✨ Funcționalități Principale
 
     Smart Auto-Mounting:
 
@@ -40,7 +40,7 @@ AMSH este un interpretor de comenzi (shell) customizat pentru Linux, creat cu sc
 
         Permite vizualizarea și ștergerea istoricului direct din shell.
 
-#📂 Structura Proiectului
+# 📂 Structura Proiectului
 
     amsh.sh: Scriptul principal. Gestionează bucla de citire a comenzilor (REPL), parsing-ul argumentelor și execuția comenzilor interne sau externe.
 
@@ -58,7 +58,7 @@ AMSH este un interpretor de comenzi (shell) customizat pentru Linux, creat cu sc
 
     amsh.conf: Fișierul de configurare unde sunt definite dispozitivele și regulile lor de montare.
 
-##⚙️ Configurare
+## ⚙️ Configurare
 
 Configurarea se face în fișierul amsh.conf aflat în același director cu scripturile. Formatul este următorul:
 
@@ -74,7 +74,7 @@ Configurarea se face în fișierul amsh.conf aflat în același director cu scri
 
     TTL: Timpul de inactivitate (în minute) după care se va încerca demontarea automată.
 
-##🚀 Utilizare
+## 🚀 Utilizare
 Pornire
 
 Deoarece comenzile mount și umount necesită privilegii de root, scriptul trebuie rulat cu sudo:
@@ -94,7 +94,7 @@ Orice altă comandă (ex: ls, cat, vim, cp) este pasată către shell-ul sistemu
 
     Notă: AMSH interceptează argumentele acestor comenzi. Dacă scrieți ls /mnt/usb, AMSH va verifica mai întâi dacă /mnt/usb trebuie montat.
 
-##🛠️ Detalii Tehnice și Observații
+## 🛠️ Detalii Tehnice și Observații
 1. Gestionarea Semnalelor (SIGINT)
 
 - Scriptul interceptează semnalul SIGINT (Ctrl+C).
@@ -115,7 +115,7 @@ Codul este strict modularizat:
 4. Parsarea Căilor
 - Pentru a evita erorile cauzate de căi relative (ex: ../mnt), scriptul convertește toate argumentele în căi absolute folosind realpath -m înainte de a le verifica în fișierul de configurare.
 
-##🧪 Testare
+## 🧪 Testare
 - Pentru a verifica dacă logica de montare funcționează corect (fără interfața shell), se poate rula scriptul de test inclus:
 ```bash
 
