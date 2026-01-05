@@ -8,8 +8,7 @@ source ./style.sh
 HISTORY_FILE="$HOME/.amsh_history"
 
 handle_sigint() {
-    echo "" # Trece la linie nouă ca să nu scrii peste prompt
-    # Nu facem nimic altceva -> Shell-ul continuă să ruleze
+    echo "" # linie noua in loc sa iasa pt ctrl-c
 }
 
 trap handle_sigint SIGINT
