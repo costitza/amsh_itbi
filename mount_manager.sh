@@ -152,7 +152,7 @@ scan_new_devices() {
         fi
 
         echo -e "[OK] Adăugat în amsh.conf."
-        echo -e "\n"
+        echo -e ""
         send_notification "AMSH" "Dispozitiv nou configurat: $dev_name" "drive-removable-media"
     done
 }
