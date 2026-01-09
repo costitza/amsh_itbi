@@ -40,23 +40,34 @@ check_and_umount_expired() {
     if [[ ! -f "$CONFIG_FILE" ]]; then return; fi
 
     while read -r device mpoint fstype ttl; do
+        [[ "$device" == \#* ]] || [[ -z "$device" ]] && continue
+        
         local ttl_file="$TTL_DIR/${mpoint//\//_}.last_access"
         
-        if [[ -f "$ttl_file" ]] && mountpoint -q "$mpoint"; then
-            local last_access=$(stat -c %Y "$ttl_file")
-            local current_time=$(date +%s)
-            local diff=$(( (current_time - last_access) / 60 ))
+        if mountpoint -q "$mpoint"; then
+            if [[ ! -e "$device" ]]; then
+                sudo umount -l "$mpoint"
+                if [[ -f "$ttl_file" ]]; then rm "$ttl_file"; fi
+                send_notification "AMSH: Eroare Dispozitiv" "Stick-ul asociat cu $mpoint a fost scos brusc!" "drive-removable-media"
+                continue
+            fi
 
-            # expirare timp & procese active 
-            if [ "$diff" -ge "$ttl" ]; then
-                if ! fuser -s "$mpoint" 2>/dev/null; then
-                    echo "[SYSTEM] TTL expirat. Demontare: $mpoint"
-                    
-                    send_notification "AMSH: Demontare automată" "TTL expirat pentru $mpoint. Dispozitivul a fost demontat." "drive-removable-media"
-                    
-                    sudo umount "$mpoint"
-                    rm "$ttl_file"
+            if [[ -f "$ttl_file" ]]; then
+                local last_access=$(stat -c %Y "$ttl_file")
+                local current_time=$(date +%s)
+                local diff=$(( (current_time - last_access) / 60 ))
+
+                if [ "$diff" -ge "$ttl" ]; then
+                    if ! fuser -s "$mpoint" 2>/dev/null; then
+                        send_notification "AMSH: Demontare automată" "TTL expirat pentru $mpoint." "drive-removable-media"
+                        sudo umount "$mpoint"
+                        rm "$ttl_file"
+                    fi
                 fi
+            fi
+        else
+            if [[ -f "$ttl_file" ]]; then
+                rm "$ttl_file"
             fi
         fi
     done < "$CONFIG_FILE"
@@ -99,52 +110,49 @@ cleanup_all_mounts() {
 scan_new_devices() {
     echo -e "[SYSTEM] Caut dispozitive noi (USB/Externe)..."
     
-    # Adaugam MOUNTPOINT in output pentru a vedea daca e deja folosit
+
     local devices=$(lsblk -rn -o PATH,FSTYPE,TYPE,MOUNTPOINT)
 
-    # Citim linie cu linie output-ul lsblk
+    # linie cu linie output-ul lsblk
     echo "$devices" | while read -r line; do
         
-        # Citim variabilele (path, fs, type, mountpoint)
-        # Folosim awk pentru siguranta la coloane goale
+        # awk pt siguranta la coloane goale
         local dev_path=$(echo "$line" | awk '{print $1}')
         local fs_type=$(echo "$line" | awk '{print $2}')
         local type=$(echo "$line" | awk '{print $3}')
         local sys_mount=$(echo "$line" | awk '{print $4}')
 
-        # --- FILTRE DE EXCLUDERE (Siguranta) ---
+        # filtre de excludere
 
-        # 1. Ignoram tot ce nu e partitie (excludem disk, rom, loop daca apare gresit)
+        # 1. ignor tot ce nu e partitie (excludem disk, rom, loop)
         if [[ "$type" != "part" ]]; then continue; fi
 
-        # 2. Ignoram dispozitivele LOOP (cele mov din poza ta)
+        # 2. ignor dispozitivele LOOP
         if [[ "$dev_path" == "/loop" ]]; then continue; fi
 
-        # 3. Ignoram partitiile care nu au sistem de fisiere (ex: swap, partitii extinse)
+        # 3. ignor partitiile fara sistem de fisiere
         if [[ -z "$fs_type" ]]; then continue; fi
 
-        # 4. CRITIC: Ignoram ce este DEJA montat de Linux (ex: /dev/sda2 din poza)
+        # 4. ignor ce este deja montat
         if [[ -n "$sys_mount" ]]; then continue; fi
 
-        # 5. Verificam sa nu fie deja in amsh.conf
         if grep -q "$dev_path" "$CONFIG_FILE"; then continue; fi
 
-        # --- DACA A TRECUT DE FILTRE, E UN STICK USB NOU ---
         
         local dev_name=$(basename "$dev_path")
-        local mount_point="/tmp/amsh_auto_$dev_name"
+        local mount_point="/tmp/amsh_$dev_name"
         local default_ttl="5"
 
-        echo -e "   -> Dispozitiv valid găsit: $dev_path ($fs_type)"
+        echo -e "-> Dispozitiv valid găsit: $dev_path ($fs_type)"
         
-        # Adaugare in config
         printf "%-19s %-25s %-9s %s\n" "$dev_path" "$mount_point" "$fs_type" "$default_ttl" >> "$CONFIG_FILE"
         
         if [ ! -d "$mount_point" ]; then
             mkdir -p "$mount_point"
         fi
 
-        echo -e "      [OK] Adăugat în amsh.conf. Poți da 'cd $mount_point'"
+        echo -e "[OK] Adăugat în amsh.conf."
+        echo -e "\n"
         send_notification "AMSH" "Dispozitiv nou configurat: $dev_name" "drive-removable-media"
     done
 }
