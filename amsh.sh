@@ -32,19 +32,7 @@ process_command() {
     fi
     
     if [[ "$command" == "help" ]]; then
-        echo -e "${CYAN}╔══════════════════════════════════════════════════════════╗${RESET}"
-        echo -e "${CYAN}║${GREEN}               COMENZI DISPONIBILE (HELP)                 ${CYAN}║${RESET}"
-        echo -e "${CYAN}╠══════════════════════════════════════════════════════════╣${RESET}"
-
-        printf "${CYAN}║${YELLOW} %-18s ${CYAN}│${RESET} %-35s ${CYAN} ║${RESET}\n" "cd <cale>" "Navigare & Montare automată"
-        printf "${CYAN}║${YELLOW} %-18s ${CYAN}│${RESET} %-35s ${CYAN}  ║${RESET}\n" "status" "Vezi timpul rămas (TTL) și starea"
-        printf "${CYAN}║${YELLOW} %-18s ${CYAN}│${RESET} %-35s ${CYAN}   ║${RESET}\n" "locate <nume>" "Caută fișier în toate discurile"
-        printf "${CYAN}║${YELLOW} %-18s ${CYAN}│${RESET} %-35s ${CYAN} ║${RESET}\n" "history [-c]" "Vezi/Șterge istoricul comenzilor"
-        printf "${CYAN}║${YELLOW} %-18s ${CYAN}│${RESET} %-35s ${CYAN}  ║${RESET}\n" "exit" "Cleanup (unmount all) și Ieșire"
-        printf "${CYAN}║${YELLOW} %-18s ${CYAN}│${RESET} %-35s ${CYAN}  ║${RESET}\n" "help" "Afișează acest meniu"
-        
-        echo -e "${CYAN}╚══════════════════════════════════════════════════════════╝${RESET}"
-        echo ""
+        print_help_menu
         return
     fi
     
