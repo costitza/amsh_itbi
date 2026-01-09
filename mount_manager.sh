@@ -106,6 +106,29 @@ cleanup_all_mounts() {
     done < "$CONFIG_FILE"
 }
 
+show_disk_usage() {
+    echo "------------------------------------------------------------------------------------"
+    printf "%-25s %-10s %-10s %-10s %-10s\n" "MOUNTPOINT" "SIZE" "USED" "AVAIL" "USE%"
+    echo "------------------------------------------------------------------------------------"
+
+    if [[ ! -f "$CONFIG_FILE" ]]; then
+        echo "Eroare: Nu găsesc fișierul de configurare."
+        return
+    fi
+
+    while read -r device mpoint fstype ttl; do
+        [[ "$device" == \#* ]] || [[ -z "$device" ]] && continue
+
+        if mountpoint -q "$mpoint"; then
+            read -r size used avail capacity <<< $(df -h "$mpoint" | awk 'NR==2 {print $2, $3, $4, $5}')
+            printf "%-25s %-10s %-10s %-10s %-10s\n" "$mpoint" "$size" "$used" "$avail" "$capacity"
+        else
+            printf "%-25s %-10s %-10s %-10s %-10s\n" "$mpoint" "-" "-" "-" "-"
+        fi
+
+    done < "$CONFIG_FILE"
+    echo "------------------------------------------------------------------------------------"
+}
 
 scan_new_devices() {
     echo -e "[SYSTEM] Caut dispozitive noi (USB/Externe)..."

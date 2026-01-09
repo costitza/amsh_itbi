@@ -47,6 +47,7 @@ print_help_menu() {
     printf "${CYAN}║${YELLOW} %-18s ${CYAN}│${RESET} %-35s ${CYAN} ║${RESET}\n" "history [-c]" "Vezi/Șterge istoricul comenzilor"
     printf "${CYAN}║${YELLOW} %-18s ${CYAN}│${RESET} %-35s ${CYAN}  ║${RESET}\n" "exit" "Cleanup (unmount all) și Ieșire"
     printf "${CYAN}║${YELLOW} %-18s ${CYAN}│${RESET} %-35s ${CYAN}║${RESET}\n" "scan" "Scaneaza pentru mpoint-uri noi"
+    printf "${CYAN}║${YELLOW} %-18s ${CYAN}│${RESET} %-35s ${CYAN} ║${RESET}\n" "usage" "Vezi spațiul liber pe discuri"
     printf "${CYAN}║${YELLOW} %-18s ${CYAN}│${RESET} %-35s ${CYAN}  ║${RESET}\n" "help" "Afișează acest meniu"
     
     echo -e "${CYAN}╚══════════════════════════════════════════════════════════╝${RESET}"

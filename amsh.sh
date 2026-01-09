@@ -36,6 +36,11 @@ process_command() {
         return
     fi
     
+    if [[ "$command" == "usage" ]]; then
+        show_disk_usage
+        return
+    fi
+    
     if [[ "$command" == "locate" ]]; then
         local search_term="${args[1]}"
         
