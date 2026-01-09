@@ -14,6 +14,7 @@ handle_sigint() {
 trap handle_sigint SIGINT
 
 process_command() {
+
     local cmd_line="$1"
     
     # Sparge stringul într-un array
@@ -23,6 +24,11 @@ process_command() {
     if [[ "$command" == "status" ]]; then
     	show_mount_status
     	return
+    fi
+    
+    if [[ "$command" == "scan" ]]; then
+        scan_new_devices
+        return
     fi
     
     if [[ "$command" == "help" ]]; then
