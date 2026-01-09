@@ -128,8 +128,9 @@ while true; do
     fi
 
     # exit 
-    if [[ "$linie_comanda" == "exit" ]]; then
-	print_exit_message
+if [[ "$linie_comanda" == "exit" ]]; then
+        cleanup_all_mounts 
+        print_exit_message
         break
     fi
 
