@@ -25,6 +25,28 @@ process_command() {
     	return
     fi
     
+    if [[ "$command" == "locate" ]]; then
+        local search_term="${args[1]}"
+        
+        if [[ -z "$search_term" ]]; then
+            echo "Utilizare: locate <nume_fisier>"
+            return
+        fi
+
+        while read -r device mpoint fstype ttl; do
+            [[ "$device" == \#* ]] && continue
+
+            if mountpoint -q "$mpoint"; then
+                local results=$(find "$mpoint" -type f -iname "*$search_term*" 2>/dev/null)
+                
+                if [[ -n "$results" ]]; then
+                    echo "$results"
+                fi
+            fi
+        done < "$CONFIG_FILE"
+        return
+    fi
+    
     # --- comanda history custom ---
     if [[ "$command" == "history" ]]; then
         # sterge history -c
