@@ -63,7 +63,6 @@ process_command() {
         return
     fi
     
-    # --- comanda history custom ---
     if [[ "$command" == "history" ]]; then
         # sterge history -c
         if [[ "${args[1]}" == "-c" ]]; then
@@ -92,7 +91,6 @@ process_command() {
         return 
     fi
 
-    # --- comanda CD ---
     if [[ "$command" == "cd" ]]; then
         local target_dir="${args[1]}"
         
@@ -110,7 +108,6 @@ process_command() {
         return
     fi
 
-    # --- comenzi externe (ls, cp, cat, etc) ---
     
     # verificare fiecare arg
     for arg in "${args[@]}"; do
@@ -118,7 +115,6 @@ process_command() {
         if [[ "$arg" == /* ]] || [[ "$arg" == ./* ]] || [[ "$arg" == ../* ]]; then
              local abs_arg=$(realpath -m "$arg")
              
-             # din nou logica de introudus
              smart_mount "$abs_arg"
         fi
     done
@@ -165,7 +161,7 @@ while true; do
     fi
 
     # exit 
-if [[ "$linie_comanda" == "exit" ]]; then
+    if [[ "$linie_comanda" == "exit" ]]; then
         cleanup_all_mounts 
         print_exit_message
         break

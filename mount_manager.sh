@@ -145,18 +145,15 @@ scan_new_devices() {
         local type=$(echo "$line" | awk '{print $3}')
         local sys_mount=$(echo "$line" | awk '{print $4}')
 
-        # filtre de excludere
 
-        # 1. ignor tot ce nu e partitie (excludem disk, rom, loop)
+        # ignor tot ce nu e partitie (excludem disk, rom, loop)
         if [[ "$type" != "part" ]]; then continue; fi
 
-        # 2. ignor dispozitivele LOOP
         if [[ "$dev_path" == "/loop" ]]; then continue; fi
 
-        # 3. ignor partitiile fara sistem de fisiere
+        # ignor partitiile fara sistem de fisiere
         if [[ -z "$fs_type" ]]; then continue; fi
 
-        # 4. ignor ce este deja montat
         if [[ -n "$sys_mount" ]]; then continue; fi
 
         if grep -q "$dev_path" "$CONFIG_FILE"; then continue; fi

@@ -16,7 +16,6 @@ print_history_entry() {
     local index="$1"
     local command_text="$2"
     
-    # taie comanda
     local safe_command="${command_text:0:44}"
     
     printf "${CYAN}║${YELLOW} %3d ${CYAN}│${RESET} %-44s   ${CYAN}║${RESET}\n" "$index" "$safe_command"
